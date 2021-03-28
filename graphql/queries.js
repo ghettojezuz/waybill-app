@@ -124,3 +124,25 @@ export const GET_WAYBILL_BY_ID = gql`
      }
   }
 `;
+
+export const GET_USER_WAYBILLS = gql`
+  query getWaybills($user_id: ID!, $is_active: Boolean!) {
+     allWaybills(filter: {is_active: $is_active, user_id: $user_id}) {
+        id
+        date_start
+        mileage_start
+        mileage_end
+        
+        Driver {
+          fio
+        }
+        
+        Car {
+          brand
+          number
+          fuel
+        }
+     }
+  }
+`;
+

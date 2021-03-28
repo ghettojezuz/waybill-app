@@ -7,14 +7,12 @@ import {fioReduction} from "../helpers/fioReduction";
 import {handleRedirect} from "../helpers/handleRedirect";
 import {useRouter} from "next/router";
 
-export default function PLItem({active = false, type = 'default', data}) {
+export default function PLItem({active = false, page = 'pl', data}) {
     const router = useRouter();
-
-    // id: "2d345898-0496-4717-aa6a-c3a65034f64b"
 
     return (
         <Card elevation={0} className={styles.plItem__wrapper}>
-            <CardActionArea onClick={() => handleRedirect(router, '/reg/[PLID]', `/reg/${data.id}`)}>
+            <CardActionArea onClick={() => handleRedirect(router, `/${page}/[PLID]`, `/${page}/${data.id}`)}>
                 <CardContent className={styles.plItem}>
                     <div className={styles.plItem__block}>
                         <p className={styles.plItem__block__title}>Дата</p>
@@ -28,7 +26,7 @@ export default function PLItem({active = false, type = 'default', data}) {
                         <p className={styles.plItem__block__title}>Гос. номер</p>
                         <p className={styles.plItem__block__text}>{data.Car.number}</p>
                     </div>
-                    {type === 'reg' &&
+                    {page === 'reg' &&
                         <div className={styles.plItem__block}>
                             <p className={styles.plItem__block__title}>Водитель</p>
                             <p className={styles.plItem__block__text}>{fioReduction(data.Driver.fio)}</p>
@@ -47,7 +45,7 @@ export default function PLItem({active = false, type = 'default', data}) {
                         <p className={styles.plItem__block__text}>{active ? '-' : `${parseInt(data.mileage_end) - parseInt(data.mileage_start)} км`}</p>
                     </div>
 
-                    {type === 'default' &&
+                    {page === 'pl' &&
                         <div className={styles.plItem__block}>
                             <p className={styles.plItem__block__title}>Статус</p>
                             <p className={styles.plItem__block__text}>

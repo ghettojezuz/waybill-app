@@ -35,7 +35,7 @@ export default function RegPage() {
                 {waybillsLoading ?
                     'Loading...'
                     :
-                    <PLItem type='reg' data={waybills.allWaybills[0]}/>
+                    <PLItem page='reg' data={waybills.allWaybills[0]}/>
                 }
 
             </div>
