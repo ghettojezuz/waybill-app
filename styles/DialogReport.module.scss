@@ -1,0 +1,19 @@
+.margin {
+  margin-top: 12px !important;
+  margin-bottom: 12px !important;
+}
+
+.label {
+  margin-bottom: 12px !important;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.dialogContent {
+  display: flex!important;
+  flex-direction: column!important;
+}

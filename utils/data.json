@@ -1,0 +1,86 @@
+{
+  "users": [
+    {
+      "id": "fae86ee8-ada5-413f-b290-308a0ecdafa1",
+      "name": "Кузнецов Никита",
+      "email": "admin",
+      "password": "admin",
+      "role": "admin"
+    },
+    {
+      "id": "b04159c0-34f3-4ad1-b6c5-3560654f32d0",
+      "name": "Быков Анатолий",
+      "email": "driver",
+      "password": "driver",
+      "role": "driver"
+    },
+    {
+      "id": "e3c9d7fc-91dc-4dc9-9246-97fd4298f9ae",
+      "name": "Сергей Мезенцев",
+      "email": "mechanic",
+      "password": "mechanic",
+      "role": "mechanic"
+    }
+  ],
+  "cars": [
+    {
+      "id": "3d6ac6cf-e5bc-4617-97c7-f78da153fbaa",
+      "brand": "Toyota Prado",
+      "number": "у100рс",
+      "mileage": 124000,
+      "fuel": "ДТ",
+      "fuel_remaining": 30.8,
+      "fuel_consumption": 8.1,
+      "is_active": false
+    },
+    {
+      "id": "fd944d5f-a50e-461c-bfb2-f7b05def2f56",
+      "brand": "Lada Granta",
+      "number": "ф001сб",
+      "mileage": 154000,
+      "fuel": "АИ-92",
+      "fuel_remaining": 22.8,
+      "fuel_consumption": 6.5,
+      "is_active": false
+    }
+
+  ],
+  "drivers": [
+    {
+      "id": "f6d94e27-c552-419f-a72f-bb5ca18b0f5b",
+      "fio": "Быков Анатолий Сергеевич",
+      "is_active": false
+    },
+    {
+      "id": "4816e3a7-22a4-4576-a296-0851431beb51",
+      "fio": "Горин Геннадий Петрович",
+      "is_active": false
+    },
+    {
+      "id": "6f5aae66-21c0-4cc8-af07-d2476678ab55",
+      "fio": "Дементьев Игорь Васильевич",
+      "is_active": false
+    },
+    {
+      "id": "6cf2ce8d-ef58-4ee5-b9ef-31afd0ed4645",
+      "fio": "Викторов Марк Викторович",
+      "is_active": false
+    }
+  ],
+  "waybills": [
+    {
+      "id": "2d345898-0496-4717-aa6a-c3a65034f64b",
+      "user_id": "fae86ee8-ada5-413f-b290-308a0ecdafa1",
+      "driver_id": "f6d94e27-c552-419f-a72f-bb5ca18b0f5b",
+      "car_id": "3d6ac6cf-e5bc-4617-97c7-f78da153fbaa",
+      "date_start": "2021-02-28T06:00:00Z",
+      "date_end": "2021-03-01T17:00:00Z",
+      "mileage_start": 120000,
+      "mileage_end": 124000,
+      "fuel_fill": 50.8,
+      "fuel_consumption_fact": 9.45,
+      "fuel_remaining_start": 30.8,
+      "is_active": false
+    }
+  ]
+}
