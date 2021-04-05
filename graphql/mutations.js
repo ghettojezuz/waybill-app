@@ -50,6 +50,25 @@ export const UPDATE_CAR = gql`
   }
 `;
 
+export const OPEN_WAYBILL = gql`
+  mutation OpenWaybill($id: ID!, $user_id: ID!, $driver_id: ID!, $car_id: ID!, $date_start: String!, $date_end: String!, $mileage_start: Int!, $mileage_end: Int!, $fuel_fill: Float!, $fuel_consumption_fact: Float!, $fuel_remaining_start: Float!, $is_active: Boolean!) {
+     createWaybill(id: $id, user_id: $user_id, driver_id: $driver_id, car_id: $car_id, date_start: $date_start, date_end: $date_end, mileage_start: $mileage_start, mileage_end: $mileage_end, fuel_fill: $fuel_fill, fuel_consumption_fact: $fuel_consumption_fact, fuel_remaining_start: $fuel_remaining_start, is_active: $is_active) {
+        id
+        user_id
+        driver_id
+        car_id
+        date_start
+        date_end
+        mileage_start
+        mileage_end
+        fuel_fill
+        fuel_consumption_fact
+        fuel_remaining_start
+        is_active
+     }
+  }
+`;
+
 export const UPDATE_FULL_WAYBILL = gql`
   mutation updateFullWaybill($id: ID!, $user_id: ID!, $driver_id: ID!, $car_id: ID!, $date_start: String!, $date_end: String!, $mileage_start: Int!, $mileage_end: Int!, $fuel_fill: Float!, $fuel_consumption_fact: Float!, $fuel_remaining_start: Float!, $is_active: Boolean!) {
      updateWaybill(id: $id, user_id: $user_id, driver_id: $driver_id, car_id: $car_id, date_start: $date_start, date_end: $date_end, mileage_start: $mileage_start, mileage_end: $mileage_end, fuel_fill: $fuel_fill, fuel_consumption_fact: $fuel_consumption_fact, fuel_remaining_start: $fuel_remaining_start, is_active: $is_active) {

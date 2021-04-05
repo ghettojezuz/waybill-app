@@ -13,8 +13,6 @@ export default function RegPage() {
         fetchPolicy: "cache-and-network"
     });
 
-    console.log(waybills)
-
     function handleCloseDialog() {
         setDialogIsOpen(false);
     }

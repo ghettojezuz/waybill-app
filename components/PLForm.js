@@ -15,7 +15,8 @@ import {GET_WAYBILL_BY_ID, GET_FREE_CARS, GET_FREE_DRIVERS} from "../graphql/que
 import {Formik} from "formik";
 import * as yup from "yup";
 import {calculateWaybillFields} from "../helpers/calculatedFields";
-import {UPDATE_FULL_WAYBILL} from "../graphql/mutations";
+import {OPEN_WAYBILL, UPDATE_FULL_WAYBILL} from "../graphql/mutations";
+import {v4 as uuidv4} from "uuid";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const validationSchema = yup.object({
+const validationSchemaOpen = yup.object({
     driver_id: yup
         .string()
         .required('Это поле обязательно'),
@@ -53,10 +54,25 @@ const validationSchema = yup.object({
         .string()
         .required('Это поле обязательно'),
     date_start: yup
+        .date()
+        .nullable()
+        .required('Это поле обязательно'),
+});
+
+const validationSchemaFull = yup.object({
+    driver_id: yup
         .string()
         .required('Это поле обязательно'),
-    date_end: yup
+    car_id: yup
         .string()
+        .required('Это поле обязательно'),
+    date_start: yup
+        .date()
+        .nullable()
+        .required('Это поле обязательно'),
+    date_end: yup
+        .date()
+        .nullable()
         .required('Это поле обязательно'),
     mileage_start: yup
         .string().matches(/^(?<=\s|^)\d+(?=\s|$)/, "Введите целое число")
@@ -75,7 +91,8 @@ const validationSchema = yup.object({
         .required('Это поле обязательно'),
 });
 
-export default function PLForm({editing = false, type}) {
+// Types: full, open, close
+export default function PLForm({editing = false, type, page}) {
     const classes = useStyles();
     const router = useRouter();
 
@@ -88,9 +105,9 @@ export default function PLForm({editing = false, type}) {
         // id автомобиля
         car_id: "",
         // дата выезда
-        date_start: new Date(),
+        date_start: null,
         // дата заезда
-        date_end: new Date(),
+        date_end: null,
         // пробег при выезде
         mileage_start: "",
         // пробег при заезде
@@ -141,23 +158,29 @@ export default function PLForm({editing = false, type}) {
                 car_id: newWaybill.Car.id,
                 fuel: newWaybill.Car.fuel,
                 fuel_consumption: newWaybill.Car.fuel_consumption,
-                date_start: newWaybill.date_start,
-                date_end: newWaybill.date_end,
-                mileage_start: newWaybill.mileage_start,
-                mileage_end: newWaybill.mileage_end,
+                date_start: newWaybill.date_start ? new Date(newWaybill.date_start) : null,
+                date_end: newWaybill.date_end ? new Date(newWaybill.date_end) : null,
+                mileage_start: newWaybill.mileage_start ? newWaybill.mileage_start : "",
+                mileage_end: newWaybill.mileage_end ? newWaybill.mileage_end : "",
                 mileage_sum: mileage_sum,
-                fuel_fill: newWaybill.fuel_fill,
-                fuel_remaining_start: newWaybill.fuel_remaining_start,
+                fuel_fill: newWaybill.fuel_fill ? newWaybill.fuel_fill : "",
+                fuel_remaining_start: newWaybill.fuel_remaining_start ? newWaybill.fuel_remaining_start : "",
                 fuel_remaining_end: fuel_remaining_end,
                 fuel_consumption_norm: fuel_consumption_norm,
-                fuel_consumption_fact: newWaybill.fuel_consumption_fact,
-            }))
+                fuel_consumption_fact: newWaybill.fuel_consumption_fact ? newWaybill.fuel_consumption_fact : "",
+            }));
+        }
+    });
+
+    const [openWaybill, {data: openWaybillData}] = useMutation(OPEN_WAYBILL, {
+        onCompleted(data) {
+            router.push(page)
         }
     });
 
     const [updateFullWaybill, {data: updateFullWaybillData}] = useMutation(UPDATE_FULL_WAYBILL, {
         onCompleted(data) {
-            router.push('/reg')
+            router.push(page)
         }
     });
 
@@ -180,7 +203,23 @@ export default function PLForm({editing = false, type}) {
                 }
             });
         } else {
-
+            // ИЗМЕНИТЬ ПРИ ПОЯВЛЕНИИ БЭКА
+            openWaybill({
+                variables: {
+                    id: uuidv4(),
+                    user_id: "fae86ee8-ada5-413f-b290-308a0ecdafa1",
+                    driver_id: values.driver_id,
+                    car_id: values.car_id,
+                    date_start: values.date_start,
+                    date_end: "",
+                    mileage_start: parseInt(values.mileage_start),
+                    mileage_end: 0,
+                    fuel_fill: 0.0,
+                    fuel_remaining_start: parseFloat(values.fuel_remaining_start),
+                    fuel_consumption_fact: 0.0,
+                    is_active: true
+                }
+            });
         }
     };
 
@@ -189,9 +228,9 @@ export default function PLForm({editing = false, type}) {
             handleSubmit(values);
         }}
                 initialValues={initialValues}
-                validationSchema={validationSchema}
-                enableReinitialize={true}>
-
+                validationSchema={type === 'open' ? validationSchemaOpen : validationSchemaFull}
+                enableReinitialize={true}
+        >
             {(formikProps) => (
                 <form className={classes.form} onSubmit={formikProps.handleSubmit}>
                     <div className={classes.gridColumn}>
@@ -203,22 +242,27 @@ export default function PLForm({editing = false, type}) {
                                     label="Дата выезда"
                                     inputVariant="outlined"
                                     format={'d MMM yyyy HH:mm'}
-                                    value={new Date(formikProps.values.date_start)}
+                                    value={formikProps.values.date_start}
                                     onChange={(value) => formikProps.setFieldValue('date_start', value)}
+                                    helperText={formikProps.touched.date_start ? formikProps.errors.date_start : ""}
+                                    error={formikProps.touched.date_start && Boolean(formikProps.errors.date_start)}
                                     cancelLabel={'Отмена'}
                                     invalidDateMessage={'Неправильный формат даты'}
                                     ampm={false}
                                     disableFuture
                                     animateYearScrolling
                                     fullWidth
+                                    disabled={type === 'close'}
                                 />
                                 <DateTimePicker
                                     autoOk
                                     label="Дата заезда"
                                     inputVariant="outlined"
                                     format={'d MMM yyyy HH:mm'}
-                                    value={new Date(formikProps.values.date_end)}
-                                    onChange={(value) => formikProps.setFieldValue('date_end', value)}
+                                    value={formikProps.values.date_end}
+                                    onChange={(value) => {formikProps.setFieldValue('date_end', value)}}
+                                    helperText={formikProps.touched.date_end ? formikProps.errors.date_end : ""}
+                                    error={formikProps.touched.date_end && Boolean(formikProps.errors.date_end)}
                                     cancelLabel={'Отмена'}
                                     invalidDateMessage={'Неправильный формат даты'}
                                     ampm={false}
@@ -226,6 +270,7 @@ export default function PLForm({editing = false, type}) {
                                     animateYearScrolling
                                     fullWidth
                                     className={classes.mt16}
+                                    disabled={type === 'open'}
                                 />
                             </FormControl>
                         </MuiPickersUtilsProvider>
@@ -240,11 +285,15 @@ export default function PLForm({editing = false, type}) {
                                 value={formikProps.values.car_id}
                                 onChange={(e) => {
                                     formikProps.setFieldValue('car_id', e.target.value);
-                                    const {fuel, fuel_consumption} = cars.allCars.filter((item) => {
+                                    const {fuel, fuel_consumption, mileage, fuel_remaining} = cars.allCars.filter((item) => {
                                         return item.id === e.target.value
                                     })[0];
                                     formikProps.setFieldValue('fuel', fuel);
                                     formikProps.setFieldValue('fuel_consumption', fuel_consumption);
+                                    if (page !== '/reg') {
+                                        formikProps.setFieldValue('mileage_start', mileage);
+                                        formikProps.setFieldValue('fuel_remaining_start', fuel_remaining);
+                                    }
 
                                     const [mileage_sum, fuel_consumption_norm, fuel_remaining_end] = calculateWaybillFields(formikProps.values.mileage_start, formikProps.values.mileage_end, fuel_consumption, formikProps.values.fuel_remaining_start, formikProps.values.fuel_fill);
                                     formikProps.setFieldValue('mileage_sum', mileage_sum);
@@ -252,7 +301,9 @@ export default function PLForm({editing = false, type}) {
                                     formikProps.setFieldValue('fuel_remaining_end', fuel_remaining_end);
                                 }}
                                 helperText={formikProps.touched.car_id ? formikProps.errors.car_id : ""}
-                                error={formikProps.touched.car_id && Boolean(formikProps.errors.car_id)}>
+                                error={formikProps.touched.car_id && Boolean(formikProps.errors.car_id)}
+                                disabled={type === 'close'}
+                            >
                                 {carsLoading ?
                                     <LoadingIndicator/>
                                     :
@@ -306,7 +357,9 @@ export default function PLForm({editing = false, type}) {
                                     formikProps.setFieldValue('fuel_remaining_end', fuel_remaining_end);
                                 }}
                                 helperText={formikProps.touched.fuel_fill ? formikProps.errors.fuel_fill : ""}
-                                error={formikProps.touched.fuel_fill && Boolean(formikProps.errors.fuel_fill)}/>
+                                error={formikProps.touched.fuel_fill && Boolean(formikProps.errors.fuel_fill)}
+                                disabled={type === 'open'}
+                            />
                             <TextField
                                 id="fuel_remaining_start"
                                 variant="outlined"
@@ -321,7 +374,9 @@ export default function PLForm({editing = false, type}) {
                                 }}
                                 helperText={formikProps.touched.fuel_remaining_start ? formikProps.errors.fuel_remaining_start : ""}
                                 error={formikProps.touched.fuel_remaining_start && Boolean(formikProps.errors.fuel_remaining_start)}
-                                className={classes.mt16}/>
+                                className={classes.mt16}
+                                disabled={type === 'close' || type === 'open'}
+                            />
                             <TextField
                                 id="fuel_remaining_end"
                                 variant="outlined"
@@ -331,7 +386,8 @@ export default function PLForm({editing = false, type}) {
                                 helperText={formikProps.touched.fuel_remaining_end ? formikProps.errors.fuel_remaining_end : ""}
                                 error={formikProps.touched.fuel_remaining_end && Boolean(formikProps.errors.fuel_remaining_end)}
                                 className={classes.mt16}
-                                disabled/>
+                                disabled
+                            />
                         </FormControl>
                     </div>
 
@@ -347,7 +403,9 @@ export default function PLForm({editing = false, type}) {
                                 value={formikProps.values.driver_id}
                                 onChange={formikProps.handleChange('driver_id')}
                                 helperText={formikProps.touched.driver_id ? formikProps.errors.driver_id : ""}
-                                error={formikProps.touched.driver_id && Boolean(formikProps.errors.driver_id)}>
+                                error={formikProps.touched.driver_id && Boolean(formikProps.errors.driver_id)}
+                                disabled={type === 'close'}
+                            >
                                 {driversLoading ?
                                     <LoadingIndicator/>
                                     :
@@ -373,7 +431,9 @@ export default function PLForm({editing = false, type}) {
                                     formikProps.setFieldValue('fuel_remaining_end', fuel_remaining_end);
                                 }}
                                 helperText={formikProps.touched.mileage_start ? formikProps.errors.mileage_start : ""}
-                                error={formikProps.touched.mileage_start && Boolean(formikProps.errors.mileage_start)}/>
+                                error={formikProps.touched.mileage_start && Boolean(formikProps.errors.mileage_start)}
+                                disabled={type === 'close' || type === 'open'}
+                            />
                             <TextField
                                 id="mileage_end"
                                 variant="outlined"
@@ -388,12 +448,13 @@ export default function PLForm({editing = false, type}) {
                                     formikProps.setFieldValue('fuel_remaining_end', fuel_remaining_end);
                                 }}
                                 helperText={formikProps.touched.mileage_end ? formikProps.errors.mileage_end : ""}
-                                error={formikProps.touched.mileage_end && Boolean(formikProps.errors.mileage_end)}/>
+                                error={formikProps.touched.mileage_end && Boolean(formikProps.errors.mileage_end)}
+                                disabled={type === 'open'}
+                            />
                             <TextField
                                 id="mileage_sum"
                                 variant="outlined"
                                 label="Пробег за день"
-                                disabled
                                 className={classes.mt16}
                                 value={formikProps.values.mileage_sum}
                                 onChange={(e) => {
@@ -401,6 +462,7 @@ export default function PLForm({editing = false, type}) {
                                 }}
                                 helperText={formikProps.touched.mileage_sum ? formikProps.errors.mileage_sum : ""}
                                 error={formikProps.touched.mileage_sum && Boolean(formikProps.errors.mileage_sum)}
+                                disabled
                             />
                         </FormControl>
 
@@ -410,11 +472,12 @@ export default function PLForm({editing = false, type}) {
                                 id="fuel_consumption_norm"
                                 variant="outlined"
                                 label="Расход по норме"
-                                disabled
                                 value={formikProps.values.fuel_consumption_norm}
                                 onChange={formikProps.handleChange('fuel_consumption_norm')}
                                 helperText={formikProps.touched.fuel_consumption_norm ? formikProps.errors.fuel_consumption_norm : ""}
-                                error={formikProps.touched.fuel_consumption_norm && Boolean(formikProps.errors.fuel_consumption_norm)}/>
+                                error={formikProps.touched.fuel_consumption_norm && Boolean(formikProps.errors.fuel_consumption_norm)}
+                                disabled
+                            />
                             <TextField
                                 id="fuel_consumption_fact"
                                 variant="outlined"
@@ -425,7 +488,9 @@ export default function PLForm({editing = false, type}) {
                                     formikProps.setFieldValue('fuel_consumption_fact', (e.target.value).toString().replace(",", "."))
                                 }}
                                 helperText={formikProps.touched.fuel_consumption_fact ? formikProps.errors.fuel_consumption_fact : ""}
-                                error={formikProps.touched.fuel_consumption_fact && Boolean(formikProps.errors.fuel_consumption_fact)}/>
+                                error={formikProps.touched.fuel_consumption_fact && Boolean(formikProps.errors.fuel_consumption_fact)}
+                                disabled={type === 'open'}
+                            />
                         </FormControl>
                     </div>
 

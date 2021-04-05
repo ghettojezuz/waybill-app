@@ -4,7 +4,7 @@ export default function RegEditPage() {
 
     return (
         <>
-            <PLForm type={"full"} editing/>
+            <PLForm type={"full"} page={'/reg'} editing/>
         </>
     )
 }

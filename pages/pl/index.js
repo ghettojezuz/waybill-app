@@ -28,7 +28,10 @@ export default function PLPage() {
     return (
         <>
             <div className="btn__wrapper">
-                <Button variant="contained" color="primary" disableElevation
+                <Button variant="contained"
+                        color="primary"
+                        disableElevation
+                        disabled={waybillsActiveLoading || waybillsActive.allWaybills.length > 0}
                         onClick={() => handleRedirect(router, "/pl/new")}>
                     Новый путевой лист
                 </Button>

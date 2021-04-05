@@ -42,8 +42,17 @@
       "fuel_remaining": 22.8,
       "fuel_consumption": 6.5,
       "is_active": false
+    },
+    {
+      "id": "e438521c-c451-4ba3-a18a-1cf037d4e578",
+      "brand": "Daewoo Matiz",
+      "number": "с222лв",
+      "mileage": 172000,
+      "fuel": "АИ-95",
+      "fuel_remaining": 30.5,
+      "fuel_consumption": 4.5,
+      "is_active": true
     }
-
   ],
   "drivers": [
     {
@@ -65,6 +74,11 @@
       "id": "6cf2ce8d-ef58-4ee5-b9ef-31afd0ed4645",
       "fio": "Викторов Марк Викторович",
       "is_active": false
+    },
+    {
+      "id": "ec1e4cc7-1b63-44b2-bd2d-4fd76651ebed",
+        "fio": "Сергеев Сергей Сергеевич",
+      "is_active": true
     }
   ],
   "waybills": [
@@ -76,11 +90,25 @@
       "date_start": "2021-02-28T06:00:00Z",
       "date_end": "2021-03-01T17:00:00Z",
       "mileage_start": 120000,
-      "mileage_end": 124000,
+      "mileage_end": 120100,
       "fuel_fill": 50.8,
       "fuel_consumption_fact": 9.45,
       "fuel_remaining_start": 30.8,
       "is_active": false
+    },
+    {
+      "id": "4388ab68-1bfa-485a-8058-34aafe5c571d",
+      "user_id": "fae86ee8-ada5-413f-b290-308a0ecdafa1",
+      "driver_id": "f6d94e27-c552-419f-a72f-bb5ca18b0f5b",
+      "car_id": "3d6ac6cf-e5bc-4617-97c7-f78da153fbaa",
+      "date_start": "2021-03-30T06:00:00Z",
+      "date_end": "",
+      "mileage_start": 120100,
+      "mileage_end": null,
+      "fuel_fill": null,
+      "fuel_consumption_fact": null,
+      "fuel_remaining_start": 30.8,
+      "is_active": true
     }
   ]
 }

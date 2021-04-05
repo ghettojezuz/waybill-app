@@ -4,7 +4,7 @@ export default function PLNewPage() {
 
     return (
         <>
-            <PLForm/>
+            <PLForm type={'open'} page={'/pl'}/>
         </>
     )
 }
