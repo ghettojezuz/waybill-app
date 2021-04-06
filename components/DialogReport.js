@@ -19,12 +19,30 @@ import Collapse from '@material-ui/core/Collapse';
 import MenuItem from "@material-ui/core/MenuItem";
 import RuLocalizedUtils from '../utils/date-fns-ru';
 import ruLocale from "date-fns/locale/ru";
+import {Formik} from "formik";
+import Select from "@material-ui/core/Select";
+import InputLabel from '@material-ui/core/InputLabel';
+import {useQuery} from "@apollo/client";
+import {GET_CARS} from "../graphql/queries";
+import LoadingIndicator from "./LoadingIndicator";
+import Chip from "@material-ui/core/Chip";
 
 
 export default function DialogReport({isOpen, handleClose}) {
-
     const [periodValue, setPeriodValue] = useState('allTime');
     const [carsAmountValue, setCarsAmountValue] = useState('all');
+    const [initialValues, setInitialValues] = useState({
+        date_period_start: null,
+        date_period_end: null,
+        date_single: null,
+        fuel: "",
+        auto_multiple: [],
+        auto_single: "",
+    });
+
+    const {loading: carsLoading, error: carsError, data: cars} = useQuery(GET_CARS, {
+        fetchPolicy: "cache-and-network"
+    });
 
     const handlePeriodChange = (event) => {
         setPeriodValue(event.target.value);
@@ -32,6 +50,50 @@ export default function DialogReport({isOpen, handleClose}) {
 
     const handleCarsAmountChange = (event) => {
         setCarsAmountValue(event.target.value);
+    };
+
+    const handleSubmit = (values) => {
+        let result = {
+            fuel: values.fuel
+        };
+
+        if (periodValue === 'allTime') {
+            result.allTime = true;
+        } else if (periodValue === 'period') {
+            result.date_period_start = values.date_period_start;
+            result.date_period_end = values.date_period_end;
+        } else if (periodValue === 'date') {
+            result.date_single = values.date_single;
+        }
+
+        if (carsAmountValue === 'all') {
+            result.allCars = true;
+        } else if (carsAmountValue === 'multiple') {
+            result.auto_multiple = values.auto_multiple;
+        } else if (carsAmountValue === 'single') {
+            result.auto_single = values.auto_single;
+        }
+
+        console.log(result)
+    };
+
+    const getMultipleRenderValue = (selected) => {
+        let result = [];
+
+        for (let i = 0; i < cars.allCars.length; i++) {
+            for (let j = 0; j < selected.length; j++) {
+                if (cars.allCars[i].id === selected[j]) {
+                    result.push(`${cars.allCars[i].brand} ${cars.allCars[i].number}`)                }
+            }
+        }
+
+        return (
+            <div className="disableScrollbar">
+                {result.map((item) => (
+                    <Chip key={item} label={item} style={{marginRight: "6px"}}/>
+                ))}
+            </div>
+        );
     };
 
     return (
@@ -42,128 +104,181 @@ export default function DialogReport({isOpen, handleClose}) {
             maxWidth={'sm'}
             fullWidth
         >
-            <DialogTitle>Построение отчетной таблицы</DialogTitle>
-            <DialogContent className={styles.dialogContent}>
-                <FormControl component="fieldset">
-                    <FormLabel component="legend" focused={false} className={styles.label}>Выберите отрезок времени</FormLabel>
-                    <RadioGroup value={periodValue} onChange={handlePeriodChange} row>
-                        <FormControlLabel value="allTime" control={<Radio color="primary"/>} label="Все время"/>
-                        <FormControlLabel value="period" control={<Radio color="primary"/>} label="Период"/>
-                        <FormControlLabel value="date" control={<Radio color="primary"/>} label="Дата"/>
-                    </RadioGroup>
-                </FormControl>
+            <Formik onSubmit={(values) => {
+                handleSubmit(values);
+            }}
+                    initialValues={initialValues}
+                    enableReinitialize={true}
+            >
+                {(formikProps) => (
+                    <form onSubmit={formikProps.handleSubmit}>
+                        <DialogTitle>Построение отчетной таблицы</DialogTitle>
+                        <DialogContent className={styles.dialogContent}>
+                            <FormControl component="fieldset">
+                                <FormLabel component="legend" focused={false} className={styles.label}>Выберите отрезок
+                                    времени</FormLabel>
+                                <RadioGroup value={periodValue} onChange={handlePeriodChange} row>
+                                    <FormControlLabel value="allTime" control={<Radio color="primary"/>}
+                                                      label="Все время"/>
+                                    <FormControlLabel value="period" control={<Radio color="primary"/>} label="Период"/>
+                                    <FormControlLabel value="date" control={<Radio color="primary"/>} label="Дата"/>
+                                </RadioGroup>
+                            </FormControl>
 
-                <Collapse in={periodValue === 'period'} timeout='auto' unmountOnExit>
-                    <div className={`${styles.margin} ${styles.grid}`}>
-                        <MuiPickersUtilsProvider utils={RuLocalizedUtils} locale={ruLocale}>
-                            <DatePicker
-                                label="Начало"
-                                inputVariant="outlined"
-                                format={'d MMM yyyy'}
-                                value={new Date('2020-01-01')}
-                                cancelLabel={'Отмена'}
-                                invalidDateMessage={'Неправильный формат даты'}
-                                disableFuture
-                                animateYearScrolling
-                                fullWidth
-                            />
-                        </MuiPickersUtilsProvider>
-                        <MuiPickersUtilsProvider utils={RuLocalizedUtils} locale={ruLocale}>
-                            <DatePicker
-                                label="Конец"
-                                inputVariant="outlined"
-                                format={'d MMM yyyy'}
-                                value={new Date('2020-01-01')}
-                                cancelLabel={'Отмена'}
-                                invalidDateMessage={'Неправильный формат даты'}
-                                disableFuture
-                                animateYearScrolling
-                                fullWidth
-                            />
-                        </MuiPickersUtilsProvider>
-                    </div>
-                </Collapse>
+                            <Collapse in={periodValue === 'period'} timeout='auto' unmountOnExit>
+                                <div className={`${styles.margin} ${styles.grid}`}>
+                                    <MuiPickersUtilsProvider utils={RuLocalizedUtils} locale={ruLocale}>
+                                        <DatePicker
+                                            autoOk
+                                            label="Начало"
+                                            inputVariant="outlined"
+                                            format={'d MMM yyyy'}
+                                            cancelLabel={'Отмена'}
+                                            invalidDateMessage={'Неправильный формат даты'}
+                                            disableFuture
+                                            animateYearScrolling
+                                            fullWidth
+                                            value={formikProps.values.date_period_start}
+                                            onChange={(value) => {
+                                                formikProps.setFieldValue('date_period_start', value);
+                                            }}
+                                        />
+                                    </MuiPickersUtilsProvider>
+                                    <MuiPickersUtilsProvider utils={RuLocalizedUtils} locale={ruLocale}>
+                                        <DatePicker
+                                            autoOk
+                                            label="Конец"
+                                            inputVariant="outlined"
+                                            format={'d MMM yyyy'}
+                                            cancelLabel={'Отмена'}
+                                            invalidDateMessage={'Неправильный формат даты'}
+                                            disableFuture
+                                            animateYearScrolling
+                                            fullWidth
+                                            value={formikProps.values.date_period_end}
+                                            onChange={(value) => {
+                                                formikProps.setFieldValue('date_period_end', value);
+                                            }}
+                                        />
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                            </Collapse>
 
-                <Collapse in={periodValue === 'date'} timeout='auto' unmountOnExit>
-                    <div className={styles.margin}>
-                        <MuiPickersUtilsProvider utils={RuLocalizedUtils} locale={ruLocale}>
-                            <DatePicker
-                                label="Дата"
-                                inputVariant="outlined"
-                                format={'d MMM yyyy'}
-                                value={new Date('2020-01-01')}
-                                cancelLabel={'Отмена'}
-                                invalidDateMessage={'Неправильный формат даты'}
-                                disableFuture
-                                animateYearScrolling
-                                fullWidth
-                            />
-                        </MuiPickersUtilsProvider>
-                    </div>
-                </Collapse>
+                            <Collapse in={periodValue === 'date'} timeout='auto' unmountOnExit>
+                                <div className={styles.margin}>
+                                    <MuiPickersUtilsProvider utils={RuLocalizedUtils} locale={ruLocale}>
+                                        <DatePicker
+                                            label="Дата"
+                                            inputVariant="outlined"
+                                            format={'d MMM yyyy'}
+                                            cancelLabel={'Отмена'}
+                                            invalidDateMessage={'Неправильный формат даты'}
+                                            disableFuture
+                                            animateYearScrolling
+                                            fullWidth
+                                            value={formikProps.values.date_single}
+                                            onChange={(value) => {
+                                                formikProps.setFieldValue('date_single', value);
+                                            }}
+                                        />
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                            </Collapse>
 
-                <FormControl component="fieldset" className={styles.margin}>
-                    <FormLabel component="legend" disabled className={styles.label}>Топливо</FormLabel>
-                    <TextField
-                        select
-                        id="name"
-                        label="Вид топлива"
-                        variant="outlined"
-                        value="">
-                        <MenuItem value="dt">ДТ</MenuItem>
-                        <MenuItem value="ai92">АИ-92</MenuItem>
-                        <MenuItem value="ai95">АИ-95</MenuItem>
-                    </TextField>
-                </FormControl>
+                            <FormControl component="fieldset" className={styles.margin}>
+                                <FormLabel component="legend" disabled className={styles.label}>Топливо</FormLabel>
+                                <TextField
+                                    select
+                                    name="fuel"
+                                    label="Вид топлива"
+                                    variant="outlined"
+                                    value={formikProps.values.fuel}
+                                    onChange={(e) => {
+                                        formikProps.setFieldValue('fuel', e.target.value);
+                                    }}
+                                >
+                                    <MenuItem value='ДТ'>ДТ</MenuItem>
+                                    <MenuItem value='АИ-92'>АИ-92</MenuItem>
+                                    <MenuItem value='АИ-95'>АИ-95</MenuItem>
+                                </TextField>
+                            </FormControl>
 
-                <FormControl component="fieldset">
-                    <FormLabel component="legend" focused={false} className={styles.label}>Автомобили</FormLabel>
-                    <RadioGroup value={carsAmountValue} onChange={handleCarsAmountChange} row>
-                        <FormControlLabel value="all" control={<Radio color="primary"/>} label="Все авто"/>
-                        <FormControlLabel value="several" control={<Radio color="primary"/>} label="Несколько авто"/>
-                        <FormControlLabel value="one" control={<Radio color="primary"/>} label="Одно авто"/>
-                    </RadioGroup>
-                </FormControl>
+                            <FormControl component="fieldset">
+                                <FormLabel component="legend" focused={false}
+                                           className={styles.label}>Автомобили</FormLabel>
+                                <RadioGroup value={carsAmountValue} onChange={handleCarsAmountChange} row>
+                                    <FormControlLabel value="all" control={<Radio color="primary"/>} label="Все авто"/>
+                                    <FormControlLabel value="multiple" control={<Radio color="primary"/>}
+                                                      label="Несколько авто"/>
+                                    <FormControlLabel value="single" control={<Radio color="primary"/>} label="Одно авто"/>
+                                </RadioGroup>
+                            </FormControl>
 
-                <Collapse in={carsAmountValue === 'several'} timeout='auto' unmountOnExit>
-                    <div className={styles.margin}>
-                        <TextField
-                            select
-                            fullWidth
-                            id="name"
-                            label="Автомобиль"
-                            variant="outlined"
-                            value="">
-                            <MenuItem value="dt">Toyota Prado ф001сб</MenuItem>
-                            <MenuItem value="ai92">Lada Granta л923ох</MenuItem>
-                        </TextField>
-                    </div>
-                </Collapse>
+                            <Collapse in={carsAmountValue === 'multiple'} timeout='auto'>
+                                <div className={styles.margin}>
+                                    <FormControl variant="outlined" fullWidth>
+                                        <InputLabel id="auto_multiple_label" style={{padding: "0 4px", backgroundColor: "#ffffff"}}>
+                                            Автомобили
+                                        </InputLabel>
+                                        <Select
+                                            id="auto_multiple"
+                                            labelId="auto_multiple_label"
+                                            multiple
+                                            fullWidth
+                                            value={formikProps.values.auto_multiple}
+                                            onChange={(e) => {
+                                                formikProps.setFieldValue('auto_multiple', e.target.value);
+                                            }}
+                                            renderValue={(selected) => getMultipleRenderValue(selected)}
+                                        >
+                                            {carsLoading ?
+                                                <LoadingIndicator/>
+                                                :
+                                                cars.allCars.map((car) => (
+                                                    <MenuItem key={car.id} value={car.id}>{car.brand} {car.number}</MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                            </Collapse>
 
-                <Collapse in={carsAmountValue === 'one'} timeout='auto' unmountOnExit>
-                    <div className={styles.margin}>
-                        <TextField
-                            select
-                            fullWidth
-                            id="name"
-                            label="Автомобиль"
-                            variant="outlined"
-                            value="">
-                            <MenuItem value="dt">Toyota Prado ф001сб</MenuItem>
-                            <MenuItem value="ai92">Lada Granta л923ох</MenuItem>
-                        </TextField>
-                    </div>
-                </Collapse>
+                            <Collapse in={carsAmountValue === 'single'} timeout='auto'>
+                                <div className={styles.margin}>
+                                    <TextField
+                                        name="auto_single"
+                                        select
+                                        fullWidth
+                                        label="Автомобиль"
+                                        variant="outlined"
+                                        value={formikProps.values.auto_single}
+                                        onChange={(e) => {
+                                            formikProps.setFieldValue('auto_single', e.target.value);
+                                        }}
+                                    >
+                                        {carsLoading ?
+                                            <LoadingIndicator/>
+                                            :
+                                            cars.allCars.map((car) => (
+                                                <MenuItem key={car.id} value={car.id}>{car.brand} {car.number}</MenuItem>
+                                            ))
+                                        }
+                                    </TextField>
+                                </div>
+                            </Collapse>
 
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose} color="secondary">
-                    Закрыть
-                </Button>
-                <Button onClick={handleClose} variant='contained' disableElevation color="primary">
-                    Построить
-                </Button>
-            </DialogActions>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="secondary">
+                                Закрыть
+                            </Button>
+                            <Button type="submit" variant='contained' disableElevation color="primary">
+                                Построить
+                            </Button>
+                        </DialogActions>
+                    </form>
+                )}
+            </Formik>
         </Dialog>
     );
 }
