@@ -12,13 +12,10 @@ import {useMutation, useQuery} from "@apollo/client";
 import {CREATE_CAR, UPDATE_CAR} from "../graphql/mutations";
 import {GET_CAR_BY_ID} from "../graphql/queries";
 import {v4 as uuidv4} from "uuid";
+import FormWrapper from "./FormWrapper";
 
 const useStyles = makeStyles((theme) => ({
     form: {
-        background: '#FFFFFF',
-        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-        borderRadius: '8px',
-        padding: '32px',
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gap: '24px 32px',
@@ -76,7 +73,7 @@ export default function DirsCarsForm(props) {
 
     const {loading: carLoading, error: carError, data: car} = useQuery(GET_CAR_BY_ID, {
         fetchPolicy: "cache-and-network",
-        variables: { id: router.query.carID },
+        variables: {id: router.query.carID},
         skip: !isEditing,
         onCompleted(data) {
             setInitialValues({
@@ -138,90 +135,92 @@ export default function DirsCarsForm(props) {
                 enableReinitialize={true}>
 
             {(formikProps) => (
-                <form className={classes.form}  onSubmit={formikProps.handleSubmit}>
+                <FormWrapper>
+                    <form className={classes.form} onSubmit={formikProps.handleSubmit}>
 
-                    <FormLabel component="legend" className={classes.label} disabled>Автомобиль</FormLabel>
+                        <FormLabel component="legend" className={classes.label} disabled>Автомобиль</FormLabel>
 
-                    <FormControl component="fieldset" className={classes.formControl}>
-                        <TextField
-                            id="brand"
-                            label="Марка автомобиля"
-                            variant="outlined"
-                            value={formikProps.values.brand}
-                            onChange={formikProps.handleChange('brand')}
-                            helperText={formikProps.touched.brand ? formikProps.errors.brand : ""}
-                            error={formikProps.touched.brand && Boolean(formikProps.errors.brand)}/>
-                    </FormControl>
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <TextField
+                                id="brand"
+                                label="Марка автомобиля"
+                                variant="outlined"
+                                value={formikProps.values.brand}
+                                onChange={formikProps.handleChange('brand')}
+                                helperText={formikProps.touched.brand ? formikProps.errors.brand : ""}
+                                error={formikProps.touched.brand && Boolean(formikProps.errors.brand)}/>
+                        </FormControl>
 
-                    <FormControl component="fieldset" className={classes.formControl}>
-                        <TextField
-                            id="number"
-                            label="Гос. номер"
-                            variant="outlined"
-                            value={formikProps.values.number}
-                            onChange={formikProps.handleChange('number')}
-                            helperText={formikProps.touched.number ? formikProps.errors.number : ""}
-                            error={formikProps.touched.number && Boolean(formikProps.errors.number)}/>
-                    </FormControl>
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <TextField
+                                id="number"
+                                label="Гос. номер"
+                                variant="outlined"
+                                value={formikProps.values.number}
+                                onChange={formikProps.handleChange('number')}
+                                helperText={formikProps.touched.number ? formikProps.errors.number : ""}
+                                error={formikProps.touched.number && Boolean(formikProps.errors.number)}/>
+                        </FormControl>
 
-                    <FormControl component="fieldset" className={classes.formControl}>
-                        <TextField
-                            id="fuel_consumption"
-                            label="Норма расхода"
-                            variant="outlined"
-                            value={formikProps.values.fuel_consumption}
-                            onChange={formikProps.handleChange('fuel_consumption')}
-                            helperText={formikProps.touched.fuel_consumption ? formikProps.errors.fuel_consumption : ""}
-                            error={formikProps.touched.fuel_consumption && Boolean(formikProps.errors.fuel_consumption)}/>
-                    </FormControl>
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <TextField
+                                id="fuel_consumption"
+                                label="Норма расхода"
+                                variant="outlined"
+                                value={formikProps.values.fuel_consumption}
+                                onChange={formikProps.handleChange('fuel_consumption')}
+                                helperText={formikProps.touched.fuel_consumption ? formikProps.errors.fuel_consumption : ""}
+                                error={formikProps.touched.fuel_consumption && Boolean(formikProps.errors.fuel_consumption)}/>
+                        </FormControl>
 
-                    <FormControl component="fieldset" className={classes.formControl}>
-                        <TextField
-                            select
-                            id="fuel"
-                            label="Вид топлива"
-                            variant="outlined"
-                            value={formikProps.values.fuel}
-                            onChange={formikProps.handleChange('fuel')}
-                            helperText={formikProps.touched.fuel ? formikProps.errors.fuel : ""}
-                            error={formikProps.touched.fuel && Boolean(formikProps.errors.fuel)}>
-                            <MenuItem value='ДТ'>ДТ</MenuItem>
-                            <MenuItem value='АИ-92'>АИ-92</MenuItem>
-                            <MenuItem value='АИ-95'>АИ-95</MenuItem>
-                        </TextField>
-                    </FormControl>
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <TextField
+                                select
+                                id="fuel"
+                                label="Вид топлива"
+                                variant="outlined"
+                                value={formikProps.values.fuel}
+                                onChange={formikProps.handleChange('fuel')}
+                                helperText={formikProps.touched.fuel ? formikProps.errors.fuel : ""}
+                                error={formikProps.touched.fuel && Boolean(formikProps.errors.fuel)}>
+                                <MenuItem value='ДТ'>ДТ</MenuItem>
+                                <MenuItem value='АИ-92'>АИ-92</MenuItem>
+                                <MenuItem value='АИ-95'>АИ-95</MenuItem>
+                            </TextField>
+                        </FormControl>
 
-                    <FormControl component="fieldset" className={classes.formControl}>
-                        <TextField
-                            id="mileage"
-                            label="Пробег"
-                            variant="outlined"
-                            value={formikProps.values.mileage}
-                            onChange={formikProps.handleChange('mileage')}
-                            helperText={formikProps.touched.mileage ? formikProps.errors.mileage : ""}
-                            error={formikProps.touched.mileage && Boolean(formikProps.errors.mileage)}/>
-                    </FormControl>
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <TextField
+                                id="mileage"
+                                label="Пробег"
+                                variant="outlined"
+                                value={formikProps.values.mileage}
+                                onChange={formikProps.handleChange('mileage')}
+                                helperText={formikProps.touched.mileage ? formikProps.errors.mileage : ""}
+                                error={formikProps.touched.mileage && Boolean(formikProps.errors.mileage)}/>
+                        </FormControl>
 
-                    <FormControl component="fieldset" className={classes.formControl}>
-                        <TextField
-                            id="fuel_remaining"
-                            label="Остаток топлива"
-                            variant="outlined"
-                            value={formikProps.values.fuel_remaining}
-                            onChange={formikProps.handleChange('fuel_remaining')}
-                            helperText={formikProps.touched.fuel_remaining ? formikProps.errors.fuel_remaining : ""}
-                            error={formikProps.touched.fuel_remaining && Boolean(formikProps.errors.fuel_remaining)}/>
-                    </FormControl>
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <TextField
+                                id="fuel_remaining"
+                                label="Остаток топлива"
+                                variant="outlined"
+                                value={formikProps.values.fuel_remaining}
+                                onChange={formikProps.handleChange('fuel_remaining')}
+                                helperText={formikProps.touched.fuel_remaining ? formikProps.errors.fuel_remaining : ""}
+                                error={formikProps.touched.fuel_remaining && Boolean(formikProps.errors.fuel_remaining)}/>
+                        </FormControl>
 
-                    <div className="grid-span-2">
-                        <Button variant="contained"
-                                color="primary"
-                                disableElevation
-                                type='submit'
-                                className={classes.button}>Сохранить</Button>
-                    </div>
+                        <div className="grid-span-2">
+                            <Button variant="contained"
+                                    color="primary"
+                                    disableElevation
+                                    type='submit'
+                                    className={classes.button}>Сохранить</Button>
+                        </div>
 
-                </form>
+                    </form>
+                </FormWrapper>
             )}
         </Formik>
     )

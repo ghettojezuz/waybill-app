@@ -9,15 +9,12 @@ import * as yup from 'yup';
 import {Formik} from 'formik';
 import {useMutation, useQuery} from "@apollo/client";
 import {CREATE_DRIVER, UPDATE_DRIVER} from "../graphql/mutations";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {GET_DRIVER_BY_ID} from "../graphql/queries";
+import FormWrapper from "./FormWrapper";
 
 const useStyles = makeStyles((theme) => ({
     form: {
-        background: '#FFFFFF',
-        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-        borderRadius: '8px',
-        padding: '32px',
         display: 'flex',
         flexDirection: 'column',
     },
@@ -59,7 +56,7 @@ export default function DirsDriversForm(props) {
 
     const {loading: driverLoading, error: driverError, data: driver} = useQuery(GET_DRIVER_BY_ID, {
         fetchPolicy: "cache-and-network",
-        variables: { id: router.query.driverID },
+        variables: {id: router.query.driverID},
         skip: !isEditing,
         onCompleted(data) {
             setInitialValues({fio: data.Driver.fio})
@@ -99,26 +96,27 @@ export default function DirsDriversForm(props) {
                 enableReinitialize={true}>
 
             {(formikProps) => (
-                <form className={classes.form} onSubmit={formikProps.handleSubmit}>
+                <FormWrapper>
+                    <form className={classes.form} onSubmit={formikProps.handleSubmit}>
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <FormLabel component="legend" className={classes.label} disabled>Водитель</FormLabel>
+                            <TextField
+                                id="fio"
+                                label="ФИО без сокращений"
+                                variant="outlined"
+                                value={formikProps.values.fio}
+                                onChange={formikProps.handleChange('fio')}
+                                helperText={formikProps.touched.fio ? formikProps.errors.fio : ""}
+                                error={formikProps.touched.fio && Boolean(formikProps.errors.fio)}/>
+                        </FormControl>
 
-                    <FormControl component="fieldset" className={classes.formControl}>
-                        <FormLabel component="legend" className={classes.label} disabled>Водитель</FormLabel>
-                        <TextField
-                            id="fio"
-                            label="ФИО без сокращений"
-                            variant="outlined"
-                            value={formikProps.values.fio}
-                            onChange={formikProps.handleChange('fio')}
-                            helperText={formikProps.touched.fio ? formikProps.errors.fio : ""}
-                            error={formikProps.touched.fio && Boolean(formikProps.errors.fio)}/>
-                    </FormControl>
-
-                    <Button variant="contained"
-                            color="primary"
-                            disableElevation
-                            type='submit'
-                            className={classes.button}>Сохранить</Button>
-                </form>
+                        <Button variant="contained"
+                                color="primary"
+                                disableElevation
+                                type='submit'
+                                className={classes.button}>Сохранить</Button>
+                    </form>
+                </FormWrapper>
             )}
         </Formik>
     )
