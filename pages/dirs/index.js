@@ -2,9 +2,9 @@ import {useRouter} from "next/router";
 import styles from '../../styles/DirsPage.module.scss';
 import Button from "@material-ui/core/Button";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import DirsList from "../../components/DirsList";
 import {useQuery} from '@apollo/client';
 import {GET_DRIVERS, GET_CARS} from "../../graphql/queries";
+import CustomList from "../../components/List";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,7 +58,13 @@ export default function DirsPage() {
                         <>Loading...</>
                         :
                         drivers ?
-                            <DirsList title="Водители" type="drivers" data={drivers.allDrivers}/>
+                            <CustomList header={"Водители"}
+                                        data={drivers.allDrivers}
+                                        primary={'fio'}
+                                        redirectUrl={'/dirs/drivers/[driverID]'}
+                                        redirectAsUrl={'/dirs/drivers/'}
+                                        hasFooter
+                            />
                             :
                             <>Error</>
                     }
@@ -78,7 +84,14 @@ export default function DirsPage() {
                         <>Loading...</>
                         :
                         cars ?
-                            <DirsList title="Автомобили" type="cars" data={cars.allCars}/>
+                            <CustomList header={"Автомобили"}
+                                        data={cars.allCars}
+                                        primary={'brand'}
+                                        secondary={'number'}
+                                        redirectUrl={'/dirs/cars/[carID]'}
+                                        redirectAsUrl={'/dirs/cars/'}
+                                        hasFooter
+                            />
                             :
                             <>Error</>
                     }

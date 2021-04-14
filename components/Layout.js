@@ -153,7 +153,7 @@ const Layout = ({children}) => {
                     <ListItemLink href="/pl" primaryTypographyProps={{className: classes.listItemText}}/>
                     <ListItemLink href="/dirs" primaryTypographyProps={{className: classes.listItemText}}/>
                     <ListItemLink href="/reg" primaryTypographyProps={{className: classes.listItemText}}/>
-                    {/*<ListItemLink href="/admin" primaryTypographyProps={{className: classes.listItemText}}/>*/}
+                    <ListItemLink href="/admin" primaryTypographyProps={{className: classes.listItemText}}/>
                 </List>
             </Drawer>
 
