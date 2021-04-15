@@ -2,10 +2,10 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import CustomList from "../../components/List";
 import Button from "@material-ui/core/Button";
 import {handleRedirect} from "../../helpers/handleRedirect";
-import FormWrapper from "../../components/FormWrapper";
 import ClearRegForm from "../../components/ClearRegForm";
 import DirsRolesForm from "../../components/DirsRolesForm";
 import DefaultPagesForm from "../../components/DefaultPagesForm";
+import {useRouter} from "next/router";
 
 const useStyles = makeStyles((theme) => ({
     grid: {
@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AdminPage() {
     const classes = useStyles();
+    const router = useRouter();
     const users = [
         {
             id: 1,
@@ -53,7 +54,7 @@ export default function AdminPage() {
                             disableElevation
                             fullWidth
                             className={classes.mb24}
-                            onClick={() => handleRedirect('/admin/users/new')}>
+                            onClick={() => handleRedirect(router,'/admin/users/new')}>
                         Новый пользователь
                     </Button>
 

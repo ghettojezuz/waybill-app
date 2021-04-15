@@ -14,7 +14,8 @@ import {
 } from '@material-ui/core';
 import ListItemLink from './ListItemLink';
 import Chip from "@material-ui/core/Chip";
-import styles from '../styles/Layout.module.scss'
+import styles from '../styles/Layout.module.scss';
+import Link from 'next/link';
 
 
 const drawerWidth = 223;
@@ -96,28 +97,22 @@ const Layout = ({children}) => {
         return (
             <Breadcrumbs className={classes.breadcrumbs}>
                 {pathnames.map((value, index) => {
-                    // const last = index === pathnames.length - 1;
-                    // const href = `/${pathnames.slice(0, index + 1).join('/')}`;
-                    //
-                    // return last ? (
-                    //     <Typography color="inherit" key={href}>
-                    //         {breadcrumbNameMap[href]}
-                    //     </Typography>
-                    // ) : (
-                    //     <Link color="inherit" href={href} key={href}>
-                    //         <a>
-                    //             {breadcrumbNameMap[href]}
-                    //         </a>
-                    //     </Link>
-                    // );
-
+                    const last = index === pathnames.length - 1;
                     const href = `/${pathnames.slice(0, index + 1).join('/')}`;
 
-                    return (
+                    return last ?
                         <Typography color="inherit" key={href}>
                             {breadcrumbNameMap[href]}
                         </Typography>
-                    );
+                        :
+                        breadcrumbNameMap[href] ?
+                            <Link color="inherit" href={href} key={href}>
+                                <a>
+                                    {breadcrumbNameMap[href]}
+                                </a>
+                            </Link>
+                            :
+                            null
                 })}
             </Breadcrumbs>
         )
@@ -143,7 +138,8 @@ const Layout = ({children}) => {
                 <div className={`${styles.user}`}>
                     <img src="/icons/Logo.png" alt=""/>
                     <p className={`${styles.user__name}`}>Кузнецов Никита</p>
-                    <Chip label="Администратор" onClick={() => {}} size="small"/>
+                    <Chip label="Администратор" onClick={() => {
+                    }} size="small"/>
                     <button className={`${styles.user__logout}`} onClick={logout}>Выйти</button>
                 </div>
 
