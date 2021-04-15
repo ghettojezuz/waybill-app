@@ -11,6 +11,7 @@ import Select from "@material-ui/core/Select";
 import InputLabel from '@material-ui/core/InputLabel';
 import Chip from "@material-ui/core/Chip";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import {roles} from "../data/roles";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -35,24 +36,6 @@ const validationSchema = yup.object({
 
 export default function DirsRolesForm({}) {
     const classes = useStyles();
-    const roles = [
-        {
-            id: 1,
-            role: "Водитель",
-            value: "driver"
-        },
-        {
-            id: 2,
-            role: "Механик",
-            value: "mechanic"
-        },
-        {
-            id: 3,
-            role: "Администратор",
-            value: "admin"
-        },
-
-    ];
 
     const [initialValues, setInitialValues] = useState({
         driversDir: [],

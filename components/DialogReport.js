@@ -26,6 +26,7 @@ import {useQuery} from "@apollo/client";
 import {GET_CARS} from "../graphql/queries";
 import LoadingIndicator from "./LoadingIndicator";
 import Chip from "@material-ui/core/Chip";
+import {fuel} from "../data/fuel";
 
 
 export default function DialogReport({isOpen, handleClose}) {
@@ -197,9 +198,9 @@ export default function DialogReport({isOpen, handleClose}) {
                                         formikProps.setFieldValue('fuel', e.target.value);
                                     }}
                                 >
-                                    <MenuItem value='ДТ'>ДТ</MenuItem>
-                                    <MenuItem value='АИ-92'>АИ-92</MenuItem>
-                                    <MenuItem value='АИ-95'>АИ-95</MenuItem>
+                                    {fuel.map((fuelItem) => (
+                                        <MenuItem key={fuelItem.id} value={fuelItem.value}>{fuelItem.fuel}</MenuItem>
+                                    ))}
                                 </TextField>
                             </FormControl>
 

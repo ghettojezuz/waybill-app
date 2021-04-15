@@ -1,10 +1,10 @@
-import DirsCarsForm from "../../../components/DirsCarsForm";
+import CarsForm from "../../../components/CarsForm";
 
 
 export default function DirsCarsEditPage() {
     return (
         <>
-            <DirsCarsForm isEditing/>
+            <CarsForm isEditing/>
         </>
     )
 }

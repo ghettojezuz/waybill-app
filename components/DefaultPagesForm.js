@@ -8,6 +8,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import {TextField} from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
+import {pages} from '../data/pages'
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -35,23 +36,6 @@ const validationSchema = yup.object({
 
 export default function DefaultPagesForm({}) {
     const classes = useStyles();
-    const pages = [
-        {
-            id: 1,
-            page: 'Мои путевые листы',
-            value: '/pl'
-        },
-        {
-            id: 2,
-            page: 'Реестр путевых листов',
-            value: '/reg'
-        },
-        {
-            id: 3,
-            page: 'Панель администратора',
-            value: '/admin'
-        },
-    ];
 
     const [initialValues, setInitialValues] = useState({
         forDriver: "",

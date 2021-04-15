@@ -1,9 +1,9 @@
-import DirsCarsForm from "../../../components/DirsCarsForm";
+import CarsForm from "../../../components/CarsForm";
 
 export default function DirsCarsNewPage() {
     return (
         <>
-            <DirsCarsForm/>
+            <CarsForm/>
         </>
     )
 }

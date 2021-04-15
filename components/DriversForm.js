@@ -37,7 +37,7 @@ const validationSchema = yup.object({
         .required('Это поле обязательно')
 });
 
-export default function DirsDriversForm(props) {
+export default function DriversForm(props) {
     const {isEditing} = props;
     const classes = useStyles();
     const router = useRouter();

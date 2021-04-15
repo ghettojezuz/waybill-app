@@ -8,6 +8,7 @@ import {useState} from "react";
 import {Formik} from "formik";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Button from "@material-ui/core/Button";
+import {frequency} from "../data/frequency";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -63,10 +64,9 @@ export default function ClearRegForm({}) {
                                 helperText={formikProps.touched.frequency ? formikProps.errors.frequency : ""}
                                 error={formikProps.touched.frequency && Boolean(formikProps.errors.frequency)}
                             >
-                                <MenuItem value='month'>Раз в месяц</MenuItem>
-                                <MenuItem value='halfYear'>Раз в полгода</MenuItem>
-                                <MenuItem value='year'>Раз в год</MenuItem>
-                                <MenuItem value='fiveYears'>Раз в 5 лет</MenuItem>
+                                {frequency.map((freq) => (
+                                    <MenuItem key={freq.id} value={freq.value}>{freq.frequency}</MenuItem>
+                                ))}
                             </TextField>
                         </FormControl>
 

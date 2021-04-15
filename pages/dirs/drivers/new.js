@@ -1,9 +1,9 @@
-import DirsDriversForm from "../../../components/DirsDriversForm";
+import DriversForm from "../../../components/DriversForm";
 
 export default function DirsDriversNewPage() {
     return (
         <>
-            <DirsDriversForm/>
+            <DriversForm/>
         </>
     )
 }
