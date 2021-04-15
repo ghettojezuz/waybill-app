@@ -18,7 +18,7 @@ function MyApp({Component, pageProps, apollo}) {
     return (
         <>
             <Head>
-                <link rel="icon" type="image/icon" href="/icons/favicon.ico" />
+                <link rel="icon" type="image/icon" href="/images/favicon.ico" />
                 <title>РОСНЕФТЬ</title>
             </Head>
             <ApolloProvider client={apollo}>

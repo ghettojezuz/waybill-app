@@ -25,7 +25,7 @@ export default function SignIn() {
         <div className={`${styles.signin__wrapper}`}>
             <div className={`${styles.signin}`}>
                 <div className={styles.logo}>
-                    <img src="/icons/Logo.png" alt=""/>
+                    <img src="/images/Logo.png" alt=""/>
                 </div>
                 <form className={`${styles.signin__form}`}
                       noValidate
@@ -71,6 +71,8 @@ export default function SignIn() {
                 {/*    </a>*/}
                 {/*</Link>*/}
             </div>
+
+            <img className={styles.signin__image} src="/images/signInBackground.png" alt=""/>
         </div>
     );
 }

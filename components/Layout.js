@@ -136,7 +136,7 @@ const Layout = ({children}) => {
                 anchor="left">
 
                 <div className={`${styles.user}`}>
-                    <img src="/icons/Logo.png" alt=""/>
+                    <img src="/images/Logo.png" alt=""/>
                     <p className={`${styles.user__name}`}>Кузнецов Никита</p>
                     <Chip label="Администратор" onClick={() => {
                     }} size="small"/>
