@@ -13,6 +13,7 @@ import {CREATE_CAR, UPDATE_CAR} from "../graphql/mutations";
 import {GET_CAR_BY_ID} from "../graphql/queries";
 import {v4 as uuidv4} from "uuid";
 import FormWrapper from "./FormWrapper";
+import {fuel} from "../data/fuel";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -183,9 +184,9 @@ export default function CarsForm(props) {
                                 onChange={formikProps.handleChange('fuel')}
                                 helperText={formikProps.touched.fuel ? formikProps.errors.fuel : ""}
                                 error={formikProps.touched.fuel && Boolean(formikProps.errors.fuel)}>
-                                <MenuItem value='ДТ'>ДТ</MenuItem>
-                                <MenuItem value='АИ-92'>АИ-92</MenuItem>
-                                <MenuItem value='АИ-95'>АИ-95</MenuItem>
+                                {fuel.map((fuelItem) => (
+                                    <MenuItem key={fuelItem.id} value={fuelItem.value}>{fuelItem.fuel}</MenuItem>
+                                ))}
                             </TextField>
                         </FormControl>
 

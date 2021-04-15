@@ -74,8 +74,6 @@ export default function DialogReport({isOpen, handleClose}) {
         } else if (carsAmountValue === 'single') {
             result.auto_single = values.auto_single;
         }
-
-        console.log(result)
     };
 
     const getMultipleRenderValue = (selected) => {
