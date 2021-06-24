@@ -10,12 +10,13 @@ import {
     List,
     Typography,
     Divider,
-    Breadcrumbs,
+    Breadcrumbs, Hidden, IconButton,
 } from '@material-ui/core';
 import ListItemLink from './ListItemLink';
 import Chip from "@material-ui/core/Chip";
 import styles from '../styles/Layout.module.scss';
 import Link from 'next/link';
+import MenuIcon from '@material-ui/icons/Menu';
 
 
 const drawerWidth = 223;
@@ -23,15 +24,19 @@ const drawerWidth = 223;
 const useStyles = makeStyles((theme) => ({
     root: {},
     appBar: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
         height: '95px',
         backgroundColor: '#F7F5F3',
         boxShadow: 'none',
+        [theme.breakpoints.up('sm')]: {
+            width: `calc(100% - ${drawerWidth}px)`,
+            marginLeft: drawerWidth,
+        },
     },
     drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
+        [theme.breakpoints.up('sm')]: {
+            width: drawerWidth,
+            flexShrink: 0,
+        },
     },
     drawerPaper: {
         width: drawerWidth,
@@ -41,7 +46,15 @@ const useStyles = makeStyles((theme) => ({
     content: {
         flexGrow: 1,
         backgroundColor: '#F7F5F3',
-        marginLeft: drawerWidth,
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: drawerWidth,
+        },
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+        [theme.breakpoints.up('sm')]: {
+            display: 'none',
+        },
     },
     title: {
         flexGrow: 1,
@@ -77,6 +90,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Layout = ({children}) => {
     const classes = useStyles();
+    const [mobileOpen, setMobileOpen] = useState(false);
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
     const dispatch = useDispatch();
     const router = useRouter();
@@ -123,35 +141,79 @@ const Layout = ({children}) => {
 
             <AppBar position={'static'} className={classes.appBar}>
                 <Toolbar>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        edge="start"
+                        onClick={handleDrawerToggle}
+                        className={classes.menuButton}
+                    >
+                        <MenuIcon />
+                    </IconButton>
                     {getBreadcrumbs()}
                 </Toolbar>
             </AppBar>
 
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-                anchor="left">
+            <Hidden>
+                <Drawer
+                    variant="temporary"
+                    anchor="left"
+                    open={mobileOpen}
+                    onClose={handleDrawerToggle}
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                    ModalProps={{
+                        keepMounted: true,
+                    }}
+                >
+                    <div className={`${styles.user}`}>
+                        <img src="/images/Logo.png" alt=""/>
+                        <p className={`${styles.user__name}`}>Кузнецов Никита</p>
+                        <Chip label="Администратор" onClick={() => {
+                        }} size="small"/>
+                        <button className={`${styles.user__logout}`} onClick={logout}>Выйти</button>
+                    </div>
 
-                <div className={`${styles.user}`}>
-                    <img src="/images/Logo.png" alt=""/>
-                    <p className={`${styles.user__name}`}>Кузнецов Никита</p>
-                    <Chip label="Администратор" onClick={() => {
-                    }} size="small"/>
-                    <button className={`${styles.user__logout}`} onClick={logout}>Выйти</button>
-                </div>
+                    <Divider/>
 
-                <Divider/>
+                    <List>
+                        <ListItemLink href="/pl" primaryTypographyProps={{className: classes.listItemText}}/>
+                        <ListItemLink href="/dirs" primaryTypographyProps={{className: classes.listItemText}}/>
+                        <ListItemLink href="/reg" primaryTypographyProps={{className: classes.listItemText}}/>
+                        <ListItemLink href="/admin" primaryTypographyProps={{className: classes.listItemText}}/>
+                    </List>
+                </Drawer>
+            </Hidden>
 
-                <List>
-                    <ListItemLink href="/pl" primaryTypographyProps={{className: classes.listItemText}}/>
-                    <ListItemLink href="/dirs" primaryTypographyProps={{className: classes.listItemText}}/>
-                    <ListItemLink href="/reg" primaryTypographyProps={{className: classes.listItemText}}/>
-                    <ListItemLink href="/admin" primaryTypographyProps={{className: classes.listItemText}}/>
-                </List>
-            </Drawer>
+            <Hidden xsDown implementation="css">
+                <Drawer
+                    className={classes.drawer}
+                    variant="permanent"
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                    anchor="left">
+
+                    <div className={`${styles.user}`}>
+                        <img src="/images/Logo.png" alt=""/>
+                        <p className={`${styles.user__name}`}>Кузнецов Никита</p>
+                        <Chip label="Администратор" onClick={() => {
+                        }} size="small"/>
+                        <button className={`${styles.user__logout}`} onClick={logout}>Выйти</button>
+                    </div>
+
+                    <Divider/>
+
+                    <List>
+                        <ListItemLink href="/pl" primaryTypographyProps={{className: classes.listItemText}}/>
+                        <ListItemLink href="/dirs" primaryTypographyProps={{className: classes.listItemText}}/>
+                        <ListItemLink href="/reg" primaryTypographyProps={{className: classes.listItemText}}/>
+                        <ListItemLink href="/admin" primaryTypographyProps={{className: classes.listItemText}}/>
+                    </List>
+                </Drawer>
+            </Hidden>
+
 
             <main className={classes.content}>
                 <div className="container">

@@ -33,7 +33,10 @@ export default function RegPage() {
                 {waybillsLoading ?
                     'Loading...'
                     :
-                    <PLItem page='reg' data={waybills.allWaybills[0]}/>
+                    waybills.allWaybills.map((waybill) => {
+                        return <PLItem key={waybill.id} page='reg' data={waybill}/>
+                    })
+
                 }
 
             </div>

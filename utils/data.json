@@ -109,6 +109,34 @@
       "fuel_consumption_fact": null,
       "fuel_remaining_start": 30.8,
       "is_active": true
+    },
+    {
+      "id": "dd345898-0496-4717-aa6a-c3235034f64b",
+      "user_id": "b04159c0-34f3-4ad1-b6c5-3560654f32d0",
+      "driver_id": "f6d94e27-c552-419f-a72f-bb5ca18b0f5b",
+      "car_id": "fd944d5f-a50e-461c-bfb2-f7b05def2f56",
+      "date_start": "2021-02-16T06:00:00Z",
+      "date_end": "2021-02-16T17:00:00Z",
+      "mileage_start": 89340,
+      "mileage_end": 89547,
+      "fuel_fill": 30.4,
+      "fuel_consumption_fact": 4.25,
+      "fuel_remaining_start": 12.2,
+      "is_active": false
+    },
+    {
+      "id": "dd345898-0496-4557-aa6a-c3235034f64b",
+      "user_id": "b04159c0-34f3-4ad1-b6c5-3560654f32d0",
+      "driver_id": "f6d94e27-c552-419f-a72f-bb5ca18b0f5b",
+      "car_id": "e438521c-c451-4ba3-a18a-1cf037d4e578",
+      "date_start": "2021-01-25T06:00:00Z",
+      "date_end": "2021-01-25T17:00:00Z",
+      "mileage_start": 55755,
+      "mileage_end": 55798,
+      "fuel_fill": 30.4,
+      "fuel_consumption_fact": 4.25,
+      "fuel_remaining_start": 12.2,
+      "is_active": false
     }
   ]
 }

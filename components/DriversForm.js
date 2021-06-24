@@ -15,16 +15,17 @@ import FormWrapper from "./FormWrapper";
 
 const useStyles = makeStyles((theme) => ({
     form: {
-        display: 'flex',
-        flexDirection: 'column',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '24px 32px',
+        alignItems: 'start',
     },
     formControl: {},
     label: {
         marginBottom: '14px',
     },
     button: {
-        width: '100%',
-        marginTop: '24px',
+        width: '100%'
     },
     mt16: {
         marginTop: '16px'
@@ -32,7 +33,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const validationSchema = yup.object({
-    fio: yup
+    firstName: yup
+        .string()
+        .required('Это поле обязательно'),
+    secondName: yup
+        .string()
+        .required('Это поле обязательно'),
+    lastName: yup
         .string()
         .required('Это поле обязательно')
 });
@@ -64,7 +71,9 @@ export default function DriversForm(props) {
     });
 
     const [initialValues, setInitialValues] = useState({
-        fio: '',
+        firstName: '',
+        secondName: '',
+        lastName: ''
     });
 
     const handleSubmit = (values) => {
@@ -72,7 +81,7 @@ export default function DriversForm(props) {
             updateDriver({
                 variables: {
                     id: router.query.driverID,
-                    fio: values.fio,
+                    firstName: values.firstName,
                     is_active: driver.Driver.is_active
                 }
             });
@@ -80,7 +89,7 @@ export default function DriversForm(props) {
             createDriver({
                 variables: {
                     id: uuidv4(),
-                    fio: values.fio,
+                    firstName: values.firstName,
                     is_active: false
                 }
             })
@@ -97,24 +106,49 @@ export default function DriversForm(props) {
 
             {(formikProps) => (
                 <FormWrapper>
+                    <FormLabel component="legend" className={classes.label} disabled>Водитель</FormLabel>
                     <form className={classes.form} onSubmit={formikProps.handleSubmit}>
+
                         <FormControl component="fieldset" className={classes.formControl}>
-                            <FormLabel component="legend" className={classes.label} disabled>Водитель</FormLabel>
                             <TextField
-                                id="fio"
-                                label="ФИО без сокращений"
+                                id="firstName"
+                                label="Имя"
                                 variant="outlined"
-                                value={formikProps.values.fio}
-                                onChange={formikProps.handleChange('fio')}
-                                helperText={formikProps.touched.fio ? formikProps.errors.fio : ""}
-                                error={formikProps.touched.fio && Boolean(formikProps.errors.fio)}/>
+                                value={formikProps.values.firstName}
+                                onChange={formikProps.handleChange('firstName')}
+                                helperText={formikProps.touched.firstName ? formikProps.errors.firstName : ""}
+                                error={formikProps.touched.firstName && Boolean(formikProps.errors.firstName)}/>
                         </FormControl>
 
-                        <Button variant="contained"
-                                color="primary"
-                                disableElevation
-                                type='submit'
-                                className={classes.button}>Сохранить</Button>
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <TextField
+                                id="secondName"
+                                label="Фамилия"
+                                variant="outlined"
+                                value={formikProps.values.secondName}
+                                onChange={formikProps.handleChange('secondName')}
+                                helperText={formikProps.touched.secondName ? formikProps.errors.secondName : ""}
+                                error={formikProps.touched.secondName && Boolean(formikProps.errors.secondName)}/>
+                        </FormControl>
+
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <TextField
+                                id="lastName"
+                                label="Отчество"
+                                variant="outlined"
+                                value={formikProps.values.lastName}
+                                onChange={formikProps.handleChange('lastName')}
+                                helperText={formikProps.touched.lastName ? formikProps.errors.lastName : ""}
+                                error={formikProps.touched.lastName && Boolean(formikProps.errors.lastName)}/>
+                        </FormControl>
+
+                        <div className="grid-span-2">
+                            <Button variant="contained"
+                                    color="primary"
+                                    disableElevation
+                                    type='submit'
+                                    className={classes.button}>Сохранить</Button>
+                        </div>
                     </form>
                 </FormWrapper>
             )}

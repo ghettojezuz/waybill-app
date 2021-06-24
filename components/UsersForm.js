@@ -27,7 +27,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const validationSchema = yup.object({
-    fio: yup
+    firstName: yup
+        .string()
+        .required('Это поле обязательно'),
+    secondName: yup
+        .string()
+        .required('Это поле обязательно'),
+    lastName: yup
         .string()
         .required('Это поле обязательно'),
     email: yup
@@ -69,7 +75,9 @@ export default function UsersForm({isEditing}) {
     // });
 
     const [initialValues, setInitialValues] = useState({
-        fio: '',
+        firstName: '',
+        secondName: '',
+        lastName: '',
         email: '',
         role: '',
     });
@@ -91,13 +99,35 @@ export default function UsersForm({isEditing}) {
                     <form className={classes.form} onSubmit={formikProps.handleSubmit}>
                         <FormControl component="fieldset" className={classes.formControl}>
                             <TextField
-                                id="fio"
-                                label="ФИО без сокращений"
+                                id="firstName"
+                                label="Имя"
                                 variant="outlined"
-                                value={formikProps.values.fio}
-                                onChange={formikProps.handleChange('fio')}
-                                helperText={formikProps.touched.fio ? formikProps.errors.fio : ""}
-                                error={formikProps.touched.fio && Boolean(formikProps.errors.fio)}/>
+                                value={formikProps.values.firstName}
+                                onChange={formikProps.handleChange('firstName')}
+                                helperText={formikProps.touched.firstName ? formikProps.errors.firstName : ""}
+                                error={formikProps.touched.firstName && Boolean(formikProps.errors.firstNamefirstName)}/>
+                        </FormControl>
+
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <TextField
+                                id="secondName"
+                                label="Фамилия"
+                                variant="outlined"
+                                value={formikProps.values.secondName}
+                                onChange={formikProps.handleChange('secondName')}
+                                helperText={formikProps.touched.secondName ? formikProps.errors.secondName : ""}
+                                error={formikProps.touched.secondName && Boolean(formikProps.errors.secondName)}/>
+                        </FormControl>
+
+                        <FormControl component="fieldset" className={classes.formControl}>
+                            <TextField
+                                id="lastName"
+                                label="Отчество"
+                                variant="outlined"
+                                value={formikProps.values.lastName}
+                                onChange={formikProps.handleChange('lastName')}
+                                helperText={formikProps.touched.lastName ? formikProps.errors.lastName : ""}
+                                error={formikProps.touched.lastName && Boolean(formikProps.errors.lastName)}/>
                         </FormControl>
 
                         <FormControl component="fieldset" className={classes.formControl}>
